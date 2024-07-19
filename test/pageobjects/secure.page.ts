@@ -8,7 +8,7 @@ class SecurePage extends Page {
   /**
    * define selectors using getter methods
    */
-  public get flashAlert() {
+  get flashAlert() {
     return $("#flash");
   }
 }
