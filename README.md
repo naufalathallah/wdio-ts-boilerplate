@@ -40,7 +40,7 @@ Create your test files in the `test/` directory. Here's an example test:
 ```typescript
 import { expect } from "chai";
 
-describe("My first test", async () => {
+describe("My first test", () => {
   it("should have the right title", async () => {
     await browser.url("https://example.com");
     const title = await browser.getTitle();
