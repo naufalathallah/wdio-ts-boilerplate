@@ -1,7 +1,8 @@
 {
   "name": "wdio-ts-boilerplate",
-  "type": "module",
   "devDependencies": {
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^20.14.11",
     "@wdio/cli": "^8.39.1",
     "@wdio/local-runner": "^8.39.1",
     "@wdio/mocha-framework": "^8.39.0",
