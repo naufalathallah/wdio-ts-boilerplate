@@ -8,6 +8,10 @@ class LoginPage extends Page {
   /**
    * define selectors using getter methods
    */
+  getAlertButton(type: string) {
+    return $(`//android.widget.Button[@text='${type}']`);
+  }
+
   public get inputUsername() {
     return $("#username");
   }
