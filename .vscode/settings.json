@@ -1,0 +1,6 @@
+{
+    "prettier.bracketSameLine": false,
+    "prettier.tabWidth": 4,
+    "prettier.vueIndentScriptAndStyle": false,
+    "prettier.printWidth": 120
+}
