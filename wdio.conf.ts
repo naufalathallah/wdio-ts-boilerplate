@@ -29,13 +29,19 @@ export const config: Options.Testrunner = {
   // The path of the spec files will be resolved relative from the directory of
   // of the config file unless it's absolute.
   //
-  // For running all specs
-  // "./test/specs/**/*.spec.ts"
   specs: [["./test/examples/satu.spec.ts", "./test/examples/dua.spec.ts"], "./test/examples/tiga.spec.ts"],
   // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
   ],
+  // Suites spec (module)
+  suites: {
+    regression: ["./test/specs/**/*.spec.ts"],
+    example: [["./test/examples/satu.spec.ts", "./test/examples/dua.spec.ts"], "./test/examples/tiga.spec.ts"],
+    otherFeature: [
+      // ...
+    ],
+  },
   //
   // ============
   // Capabilities

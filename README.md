@@ -70,3 +70,17 @@ specs: [
 ],
 
 ```
+
+## Commands
+
+1. regression
+
+```bash
+   npx wdio wdio.conf.js --suite regression
+```
+
+2. satu per satu spec
+
+```bash
+   npm run wdio
+```
