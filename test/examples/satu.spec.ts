@@ -1,6 +1,6 @@
 import { expect } from "@wdio/globals";
-import LoginPage from "../../pageobjects/login.page";
-import SecurePage from "../../pageobjects/secure.page";
+import LoginPage from "../pageobjects/login.page";
+import SecurePage from "../pageobjects/secure.page";
 
 describe("My Login satu", () => {
   it("should login with valid credentials", async () => {

@@ -31,10 +31,7 @@ export const config: Options.Testrunner = {
   //
   // For running all specs
   // "./test/specs/**/*.spec.ts"
-  specs: [
-    ["./test/specs/examples/satu.spec.ts", "./test/specs/examples/dua.spec.ts"],
-    "./test/specs/examples/tiga.spec.ts",
-  ],
+  specs: [["./test/examples/satu.spec.ts", "./test/examples/dua.spec.ts"], "./test/examples/tiga.spec.ts"],
   // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
