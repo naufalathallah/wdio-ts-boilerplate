@@ -48,3 +48,25 @@ describe("My first test", () => {
   });
 });
 ```
+
+## Perbedaan worker
+
+1. Dijalankan dengan worker terpisah (1 chromedriver)
+
+```typescript
+specs: [
+  './test/specs/test1.spec.ts',
+  './test/specs/test2.spec.ts',
+  './test/specs/test3.spec.ts'
+],
+```
+
+2. Dijalankan dengan worker yang sama (2 chromedriver)
+
+```typescript
+specs: [
+  ['./test/specs/test1.spec.ts', './test/specs/test2.spec.ts'], // Kelompok ini dijalankan dalam worker yang sama
+  './test/specs/test3.spec.ts' // Ini dijalankan dalam worker terpisah
+],
+
+```
