@@ -29,6 +29,8 @@ export const config: Options.Testrunner = {
   // The path of the spec files will be resolved relative from the directory of
   // of the config file unless it's absolute.
   //
+  // For running all specs
+  // "./test/specs/**/*.spec.ts"
   specs: [
     ["./test/specs/examples/satu.spec.ts", "./test/specs/examples/dua.spec.ts"],
     "./test/specs/examples/tiga.spec.ts",
