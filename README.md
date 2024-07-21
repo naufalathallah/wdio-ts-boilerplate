@@ -4,33 +4,35 @@ This is a boilerplate project for setting up WebdriverIO with TypeScript. It inc
 
 ## Prerequisites
 
-Make sure you have Node.js installed. You can download it from [nodejs.org](https://nodejs.org/).
+1. Node JS (^16)
+2. Setup .env
 
-## Setup
-
-1. Clone the repository:
-
-   ```bash
-   git clone <repository-url>
-   cd wdio-ts-boilerplate
-   ```
-
-2. Install dependencies:
-
-   ```bash
+```bash
    npm install
-   ```
+```
 
-3. Run tests:
+## Commands
 
-   ```bash
-   npm test
-   ```
+1. regression
+
+```bash
+   npx wdio wdio.conf.js --suite regression
+```
+
+2. one by one spec
+
+```bash
+   npm run wdio
+```
 
 ## Project Structure
 
-- `src/`: Contains TypeScript source files for your tests and page objects.
-- `test/`: Contains test specification files.
+- `test/specs/`: Contains test specification files.
+- `test/pageobjects/`: Contains page object files for managing web elements and actions.
+- `test/data/`: Contains test data files, such as JSON or CSV files used in tests.
+- `test/api/`: Contains API interaction modules or functions.
+- `test/utils/`: Contains utility or helper functions used in tests.
+- `test/examples/`: Contains example test specification files.
 - `wdio.conf.ts`: The main configuration file for WebdriverIO.
 
 ## Writing Tests
@@ -49,9 +51,9 @@ describe("My first test", () => {
 });
 ```
 
-## Perbedaan worker
+## Worker
 
-1. Dijalankan dengan worker terpisah (1 chromedriver)
+1. Sequential running (1 browser)
 
 ```typescript
 specs: [
@@ -61,26 +63,12 @@ specs: [
 ],
 ```
 
-2. Dijalankan dengan worker yang sama (2 chromedriver)
+2. Parallel running (2 browser)
 
 ```typescript
 specs: [
-  ['./test/specs/test1.spec.ts', './test/specs/test2.spec.ts'], // Kelompok ini dijalankan dalam worker yang sama
-  './test/specs/test3.spec.ts' // Ini dijalankan dalam worker terpisah
+  ['./test/specs/test1.spec.ts', './test/specs/test2.spec.ts'], // browser 1
+  './test/specs/test3.spec.ts' // browser 2
 ],
 
-```
-
-## Commands
-
-1. regression
-
-```bash
-   npx wdio wdio.conf.js --suite regression
-```
-
-2. satu per satu spec
-
-```bash
-   npm run wdio
 ```
