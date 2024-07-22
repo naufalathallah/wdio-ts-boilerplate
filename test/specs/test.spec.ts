@@ -6,7 +6,7 @@ describe("My Login application", () => {
   it("[key: TD-T2160] User cek button back pada halaman Ringkasan Order", async () => {
     await LoginPage.open();
 
-    await LoginPage.login("tomsmith", "SuperSecretPassword!");
+    await LoginPage.login("tomsmiths", "SuperSecretPassword!");
     await expect(SecurePage.flashAlert).toBeExisting();
     await expect(SecurePage.flashAlert).toHaveTextContaining("You logged into a secure area!");
   });

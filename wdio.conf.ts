@@ -1,5 +1,9 @@
 import type { Options } from "@wdio/types";
 import { updateZephyrTestExecution } from "./test/api/zephyr.api";
+import * as fs from "fs";
+import * as path from "path";
+
+const screenshotDir = path.join(__dirname, "screenshots");
 
 // Set ENABLE_ZEPHYR_UPDATE based on environment
 if (process.env.NODE_ENV === "regression") {
@@ -258,6 +262,36 @@ export const config: Options.Testrunner = {
    */
 
   afterTest: async function (test, context, { error, result, duration, passed, retries }) {
+    // Screenshots when failed
+    if (!passed) {
+      const currentDate = new Date().toISOString().split("T")[0];
+      const dailyScreenshotDir = path.join(screenshotDir, currentDate);
+
+      if (!fs.existsSync(screenshotDir)) {
+        fs.mkdirSync(screenshotDir, { recursive: true });
+      }
+
+      if (!fs.existsSync(dailyScreenshotDir)) {
+        fs.mkdirSync(dailyScreenshotDir, { recursive: true });
+      }
+
+      const matches = test.title.match(/\[key: (.+?)\]/);
+      let filenameKeys = "";
+
+      if (matches && matches.length > 1) {
+        filenameKeys = matches[1]
+          .split(",")
+          .map((key) => key.trim())
+          .join("_");
+      }
+
+      const screenshotFilename = `${filenameKeys}.png`;
+      const screenshotFilePath = path.join(dailyScreenshotDir, screenshotFilename);
+
+      await browser.saveScreenshot(screenshotFilePath);
+      console.log(`================================\nScreenshot saved: ${screenshotFilePath}`);
+    }
+
     // Integration to Zephyr
     const enableZephyrUpdate = process.env.ENABLE_ZEPHYR_UPDATE === "true";
 
