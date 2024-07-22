@@ -61,6 +61,7 @@ npm run test:suite:suiteName
 - `test/utils/`: Contains utility or helper functions used in tests.
 - `test/examples/`: Contains example test specification files.
 - `wdio.conf.ts`: The main configuration file for WebdriverIO.
+- `screenshots/`: Contains screenshots of failed test case runs.
 
 ## Writing Tests
 
