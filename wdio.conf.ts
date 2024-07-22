@@ -1,6 +1,14 @@
 import type { Options } from "@wdio/types";
 import { updateZephyrTestExecution } from "./test/api/zephyr.api";
 
+// Set ENABLE_ZEPHYR_UPDATE based on environment
+if (process.env.NODE_ENV === "regression") {
+  process.env.ENABLE_ZEPHYR_UPDATE = "true";
+}
+
+// Determine if headless mode should be enabled
+const headless = process.env.HEADLESS === "true";
+
 export const config: Options.Testrunner = {
   //
   // ====================
@@ -69,6 +77,9 @@ export const config: Options.Testrunner = {
   capabilities: [
     {
       browserName: "chrome",
+      "goog:chromeOptions": {
+        args: headless ? ["--headless", "--disable-gpu"] : [],
+      },
     },
   ],
 

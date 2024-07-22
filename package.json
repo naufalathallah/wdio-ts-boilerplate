@@ -14,7 +14,9 @@
     "typescript": "^5.5.3"
   },
   "scripts": {
-    "wdio": "wdio run ./wdio.conf.ts"
+    "wdio": "wdio run ./wdio.conf.ts",
+    "test:regression": "NODE_ENV=regression wdio run ./wdio.conf.ts --suite regression",
+    "test:regression:headless": "NODE_ENV=regression HEADLESS=true wdio run ./wdio.conf.ts --suite regression"
   },
   "dependencies": {
     "axios": "^1.7.2"
