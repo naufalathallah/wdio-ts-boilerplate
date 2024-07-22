@@ -68,15 +68,35 @@ npm run test:suite:suiteName
 Create your test files in the `test/` directory. Here's an example test:
 
 ```typescript
-import { expect } from "chai";
-
-describe("My first test", () => {
-  it("should have the right title", async () => {
-    await browser.url("https://example.com");
-    const title = await browser.getTitle();
-    expect(title).to.equal("Example Domain");
+describe("Home Page Test", () => {
+  it("should display the correct header text", async () => {
+    await HomePage.open();
+    const headerText = await HomePage.getHeaderText();
+    expect(headerText).to.equal("Example Domain");
   });
 });
+```
+
+Create your page objects in the test/pageobjects/ directory:
+
+```typescript
+class HomePage {
+  // Define selectors using getter methods
+  get header() {
+    return $("h1");
+  }
+
+  // Define actions as methods
+  async open() {
+    await browser.url("https://example.com");
+  }
+
+  async getHeaderText() {
+    return this.header.getText();
+  }
+}
+
+export default new HomePage();
 ```
 
 ## Worker
@@ -100,3 +120,24 @@ specs: [
 ],
 
 ```
+
+## Branching Workflow
+
+Main Branches:
+
+- `main`: Stable and production-ready code.
+- `develop`: Integration branch for ongoing development.
+
+Naming Convention:
+
+- New Feature: feature/<feature-name>
+- Bugfix: bugfix/<bug-name>
+- Hotfix: hotfix/<fixing-name>
+- Release: release/<version-name>
+
+Merging Branch, Create a pull request:
+
+- From feature/<feature-name> to develop
+- From bugfix/<bug-name> to develop
+- From release/<version-name> to main
+- From hotfix/<fixing-name> to main
