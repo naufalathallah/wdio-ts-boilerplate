@@ -1,4 +1,6 @@
 import type { Options } from "@wdio/types";
+import { updateZephyrTestExecution } from "./test/api/zephyr.api";
+
 export const config: Options.Testrunner = {
   //
   // ====================
@@ -243,8 +245,31 @@ export const config: Options.Testrunner = {
    * @param {boolean} result.passed    true if test has passed, otherwise false
    * @param {object}  result.retries   information about spec related retries, e.g. `{ attempts: 0, limit: 0 }`
    */
-  // afterTest: function(test, context, { error, result, duration, passed, retries }) {
-  // },
+
+  afterTest: async function (test, context, { error, result, duration, passed, retries }) {
+    // Integration to Zephyr
+    const enableZephyrUpdate = process.env.ENABLE_ZEPHYR_UPDATE === "true";
+
+    if (enableZephyrUpdate) {
+      const statusName = passed ? "Pass" : "Fail";
+      let comment = "";
+
+      if (!passed && error) {
+        comment = `Error: ${error.message}`;
+      }
+
+      const testCaseKeys: RegExpMatchArray | null = test.title.match(/\[key: (.+?)\]/);
+      if (testCaseKeys && testCaseKeys.length > 1) {
+        const keys = testCaseKeys[1].split(",").map((key) => key.trim());
+
+        for (const testCaseKey of keys) {
+          if (testCaseKey) {
+            await updateZephyrTestExecution(testCaseKey, statusName, comment, duration);
+          }
+        }
+      }
+    }
+  },
 
   /**
    * Hook that gets executed after the suite has ended
