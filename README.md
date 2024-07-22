@@ -16,13 +16,40 @@ This is a boilerplate project for setting up WebdriverIO with TypeScript. It inc
 1. regression
 
 ```bash
-   npx wdio wdio.conf.js --suite regression
+   npm run test:regression
 ```
 
 2. one by one spec
 
 ```bash
    npm run wdio
+```
+
+3. suite
+
+- add suiteName to wdio.conf.ts
+
+```typescript
+suites: {
+ suiteName: [
+// spec path
+ ],
+ },
+```
+
+- add suiteName to package.json
+
+```typescript
+"scripts": {
+// ...
+"test:suite:suiteName": "wdio run ./wdio.conf.ts --suite suiteName"
+},
+```
+
+- run
+
+```bash
+npm run test:suite:suiteName
 ```
 
 ## Project Structure

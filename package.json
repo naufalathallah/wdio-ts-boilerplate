@@ -16,7 +16,8 @@
   "scripts": {
     "wdio": "wdio run ./wdio.conf.ts",
     "test:regression": "NODE_ENV=regression wdio run ./wdio.conf.ts --suite regression",
-    "test:regression:headless": "NODE_ENV=regression HEADLESS=true wdio run ./wdio.conf.ts --suite regression"
+    "test:regression:headless": "NODE_ENV=regression HEADLESS=true wdio run ./wdio.conf.ts --suite regression",
+    "test:suite:example": "wdio run ./wdio.conf.ts --suite example"
   },
   "dependencies": {
     "axios": "^1.7.2"
