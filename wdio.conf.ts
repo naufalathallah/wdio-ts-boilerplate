@@ -2,8 +2,11 @@ import type { Options } from "@wdio/types";
 import { updateZephyrTestExecution } from "./test/api/zephyr.api";
 import * as fs from "fs";
 import * as path from "path";
+import { regressionDiscordHooks } from "./test/api/discord.api";
 
 const screenshotDir = path.join(__dirname, "screenshots");
+const timeFilePath = path.join(__dirname, "timeStorage.txt");
+const specResultPath = path.join(__dirname, "specResult.txt");
 
 // Set ENABLE_ZEPHYR_UPDATE based on environment
 if (process.env.NODE_ENV === "regression") {
@@ -179,8 +182,19 @@ export const config: Options.Testrunner = {
    * @param {object} config wdio configuration object
    * @param {Array.<Object>} capabilities list of capabilities details
    */
-  // onPrepare: function (config, capabilities) {
-  // },
+  onPrepare: function (config, capabilities) {
+    const enableZephyrUpdate = process.env.ENABLE_ZEPHYR_UPDATE === "true";
+
+    if (enableZephyrUpdate) {
+      if (fs.existsSync(timeFilePath)) {
+        fs.unlinkSync(timeFilePath);
+      }
+
+      if (fs.existsSync(specResultPath)) {
+        fs.unlinkSync(specResultPath);
+      }
+    }
+  },
   /**
    * Gets executed before a worker process is spawned and can be used to initialize specific service
    * for that worker as well as modify runtime environments in an async fashion.
@@ -262,6 +276,18 @@ export const config: Options.Testrunner = {
    */
 
   afterTest: async function (test, context, { error, result, duration, passed, retries }) {
+    // Get total time running
+    const enableZephyrUpdate = process.env.ENABLE_ZEPHYR_UPDATE === "true";
+
+    if (enableZephyrUpdate) {
+      let currentTotalTime = 0;
+      if (fs.existsSync(timeFilePath)) {
+        currentTotalTime = parseInt(fs.readFileSync(timeFilePath, "utf8"));
+      }
+      currentTotalTime += duration;
+      fs.writeFileSync(timeFilePath, currentTotalTime.toString());
+    }
+
     // Screenshots when failed
     if (!passed) {
       const currentDate = new Date().toISOString().split("T")[0];
@@ -293,8 +319,6 @@ export const config: Options.Testrunner = {
     }
 
     // Integration to Zephyr
-    const enableZephyrUpdate = process.env.ENABLE_ZEPHYR_UPDATE === "true";
-
     if (enableZephyrUpdate) {
       const statusName = passed ? "Pass" : "Fail";
       let comment = "";
@@ -338,8 +362,15 @@ export const config: Options.Testrunner = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {Array.<String>} specs List of spec file paths that ran
    */
-  // after: function (result, capabilities, specs) {
-  // },
+  after: function (result, capabilities, specs) {
+    const enableZephyrUpdate = process.env.ENABLE_ZEPHYR_UPDATE === "true";
+
+    if (enableZephyrUpdate) {
+      const logEntry = `${specs.join(", ")}, Result: ${result === 0 ? "Passed" : "Failed"}\n`;
+
+      fs.appendFileSync(specResultPath, logEntry);
+    }
+  },
   /**
    * Gets executed right after terminating the webdriver session.
    * @param {object} config wdio configuration object
@@ -356,8 +387,54 @@ export const config: Options.Testrunner = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {<Object>} results object containing test results
    */
-  // onComplete: function(exitCode, config, capabilities, results) {
-  // },
+  onComplete: async function (exitCode, config, capabilities, results) {
+    // Discord Hooks
+    const enableZephyrUpdate = process.env.ENABLE_ZEPHYR_UPDATE === "true";
+
+    if (enableZephyrUpdate) {
+      // Get passed and failed spec
+      let specsPassed: string[] = [];
+      let specsFailed: string[] = [];
+
+      if (fs.existsSync(specResultPath)) {
+        const specResults = fs.readFileSync(specResultPath, "utf8").split("\n").filter(Boolean);
+
+        specResults.forEach((spec) => {
+          // Handle arrays of specs and single specs
+          const specArray = spec.includes("[") ? JSON.parse(spec.replace(/'/g, '"')) : [spec];
+          specArray.forEach((singleSpec: string) => {
+            if (singleSpec.includes("Result: Passed")) {
+              specsPassed.push(singleSpec);
+            } else if (singleSpec.includes("Result: Failed")) {
+              specsFailed.push(singleSpec);
+            }
+          });
+        });
+      }
+
+      if (fs.existsSync(specResultPath)) {
+        fs.unlinkSync(specResultPath);
+      }
+
+      (config as any).specsPassed = specsPassed;
+      (config as any).specsFailed = specsFailed;
+
+      // Get total time execution
+      if (fs.existsSync(timeFilePath)) {
+        const totalExecutionTime = fs.readFileSync(timeFilePath, "utf8");
+        (config as any).totalExecutionTime = totalExecutionTime;
+        console.log("Final total execution time:", totalExecutionTime);
+      }
+      if (fs.existsSync(timeFilePath)) {
+        fs.unlinkSync(timeFilePath);
+      }
+
+      console.log("===========================");
+      console.log(config);
+      await regressionDiscordHooks(config as any);
+    }
+  },
+
   /**
    * Gets executed when a refresh happens.
    * @param {string} oldSessionId session ID of the old session

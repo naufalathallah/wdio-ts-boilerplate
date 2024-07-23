@@ -38,3 +38,7 @@ Thumbs.db
 
 # Screenshots
 screenshots/
+
+# Discord Hooks
+timeStorage.txt
+specResult.txt
